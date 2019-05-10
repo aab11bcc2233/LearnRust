@@ -1,0 +1,12 @@
+[package]
+name = "my_shutdown"
+version = "0.1.0"
+authors = ["t.hcc@foxmail.com <t.hcc@foxmail.com>"]
+edition = "2018"
+
+[dependencies]
+countdown = "0.1.2"
+
+[dependencies.gtk]
+version = "0.6.0"
+features = ["v3_16"]
