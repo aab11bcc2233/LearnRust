@@ -5,7 +5,8 @@ authors = ["t.hcc@foxmail.com <t.hcc@foxmail.com>"]
 edition = "2018"
 
 [dependencies]
-countdown = "0.1.2"
+chrono = "0.4.6"
+gio = "0.6.0"
 
 [dependencies.gtk]
 version = "0.6.0"
