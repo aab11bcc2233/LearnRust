@@ -12,3 +12,9 @@ glib = "0.7.1"
 [dependencies.gtk]
 version = "0.6.0"
 features = ["v3_16"]
+
+[profile.release]
+panic = 'abort'
+lto = true # 优化 release 文件的大小
+           # 紧接着在命令行执行 strip target/release/my_shutdown 可进一步优化，
+           # 但是这将造成，当程序 painc 时没有一个良好的调试信息
