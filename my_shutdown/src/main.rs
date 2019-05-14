@@ -49,25 +49,36 @@
 //
 
 
-//! # Clock Sample
-//!
-//! This sample demonstrates how to use gtk::timeout_add_seconds to run
-//! a periodic task, implementing a clock in this example.
-
 extern crate gio;
 extern crate gtk;
-extern crate chrono;
+//extern crate chrono;
+//extern crate glib;
 
 use gio::prelude::*;
 use gtk::prelude::*;
 use std::env::args;
-use chrono::Local;
-use gtk::Button;
+//use chrono::Local;
+//use gtk::Button;
+
+//use std::sync::{Mutex, Arc};
+use std::process::Command;
+//use std::thread;
 
 
-fn current_time() -> String {
-    return format!("{}", Local::now().format("%Y-%m-%d %H:%M:%S"));
-}
+//fn current_time() -> String {
+//    return format!("{}", Local::now().format("%Y-%m-%d %H:%M:%S"));
+//}
+
+//fn deep_main_quit(n: usize) {
+//    if n == 0 {
+//        return;
+//    }
+//    gtk::main_quit();
+//    gtk::idle_add(move || {
+//        deep_main_quit(n - 1);
+//        gtk::Continue(false)
+//    });
+//}
 
 
 fn build_ui(application: &gtk::Application) {
@@ -76,9 +87,9 @@ fn build_ui(application: &gtk::Application) {
     window.set_title("First GTK+ Clock");
     window.set_border_width(10);
     window.set_position(gtk::WindowPosition::Center);
-    window.set_default_size(260, 40);
+    window.set_default_size(600, 400);
 
-    let mut countdown = 5u32;
+    let mut countdown = 9u32;
 //    let time = current_time();
 //    let time = countdown.to_string();
 //    let label = gtk::Label::new(None);
@@ -92,28 +103,70 @@ fn build_ui(application: &gtk::Application) {
     let tip = gtk::Label::new("打卡了吗？");
     outer_box.pack_start(&tip, true, false, 40);
 
-    let btn_cancel = Button::new_with_label("取消");
-    outer_box.pack_start(&btn_cancel, true, true, 0);
+    let close_tip = gtk::Label::new("");
+    outer_box.pack_start(&close_tip, true, true, 0);
 
-    btn_cancel.connect_clicked(|_| {
-        println!("Clicked!");
-    });
+//    let btn_cancel = Button::new_with_label("取消");
+//    outer_box.pack_start(&btn_cancel, true, true, 0);
+
+//    let is_cancel: Arc<Mutex<bool>> = Arc::new(Mutex::new(false));
+
+
+//    let is_cancel_btn = Arc::clone(&is_cancel);
+//    btn_cancel.connect_clicked(move |_| {
+//        println!("Clicked!");
+////        let mut cancel = is_cancel_btn.lock().unwrap();
+////        *cancel = true;
+//
+////        thread::spawn(|| {
+////            glib::idle_add(|| {
+////                println!("Quit");
+////                deep_main_quit(2);
+////                gtk::Continue(false)
+////            });
+////        });
+////
+////        println!("Run");
+////        gtk::main();
+//
+//        gtk::Continue(false);
+//        gtk::main_quit();
+//        Inhibit(false);
+//    });
 
     window.add(&outer_box);
 
     window.show_all();
 
     // we are using a closure to capture the label (else we could also use a normal function)
+//    let is_cancel_tick = Arc::clone(&is_cancel);
     let tick = move || {
+//        let is_cancel = is_cancel_tick.lock().unwrap();
+//        if *is_cancel {
+//            return gtk::Continue(false);
+//        }
 
 //        let time = current_time();
 //        label.set_text(&time);
+
+        if countdown == 0 {
+            return gtk::Continue(false);
+        }
+
         countdown -= 1;
 //        label.set_text(&countdown.to_string());
 
-        let btn_text = format!("({}秒后关机) 取消", countdown);
+        let btn_text = format!("{}秒后关机", countdown);
+//        btn_cancel.set_label(&btn_text);
+        close_tip.set_label(&btn_text);
 
-        btn_cancel.set_label(&btn_text);
+        if countdown == 0 {
+            let _output = Command::new("poweroff")
+//                .args(&[])
+                .output()
+                .expect("failed to execute process");
+            return gtk::Continue(false);
+        }
 
         // we could return gtk::Continue(false) to stop our clock after this tick
         gtk::Continue(true)
