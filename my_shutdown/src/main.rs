@@ -100,7 +100,7 @@ fn build_ui(application: &gtk::Application) {
     let outer_box = gtk::Box::new(gtk::Orientation::Vertical, 0);
 
 
-    let tip = gtk::Label::new("打卡了吗？");
+    let tip = gtk::Label::new("打卡了吗？\n打卡了吗？\n打卡了吗？");
     outer_box.pack_start(&tip, true, false, 40);
 
     let close_tip = gtk::Label::new("");
