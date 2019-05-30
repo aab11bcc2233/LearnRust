@@ -8,8 +8,9 @@ fn main() {
             .read_line(&mut text)
             .expect("Failed to read line");
 
-        if text.as_str().eq("q") {
-            println!("q");
+        let text = text.trim();
+        if text == "q" {
+            println!("bye-bye!");
             break;
         }
         println!("read line = {}", text);
